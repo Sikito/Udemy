@@ -1,47 +1,94 @@
 import React, { Component } from 'react';
-import styles from './App.module.css';
 
-import Validation from './Validation';
-import Character from './Character';
+import classes from './App.module.css';
+import Person from './Person/Person';
 
 class App extends Component {
   state = {
-    myText: ''
+    persons: [
+      { id: 'asfa1', name: 'Max', age: 28 },
+      { id: 'vasdf1', name: 'Manu', age: 29 },
+      { id: 'asdf11', name: 'Stephanie', age: 26 }
+    ],
+    otherState: 'some other value',
+    showPersons: false
   };
-  inputChangeHandler = e => {
-    let myText = e.target.value;
 
-    this.setState({ myText });
+  nameChangedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    // const person = Object.assign({}, this.state.persons[personIndex]);
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({ persons: persons });
   };
 
-  characterClickHandler = characterIndex => {
-    const textArray = this.state.myText.split('');
-    textArray.splice(characterIndex, 1);
-    let updatedText = textArray.join('');
-    this.setState({ myText: updatedText });
+  deletePersonHandler = personIndex => {
+    // const persons = this.state.persons.slice();
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
+  };
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({ showPersons: !doesShow });
   };
 
   render() {
+    let persons = null;
+    let btnClass = '';
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return (
+              <Person
+                cssClass={classes.Person}
+                click={() => this.deletePersonHandler(index)}
+                name={person.name}
+                age={person.age}
+                key={person.id}
+                changed={event => this.nameChangedHandler(event, person.id)}
+              />
+            );
+          })}
+        </div>
+      );
+
+      btnClass = classes.Red;
+    }
+
+    const assignedClasses = [];
+    if (this.state.persons.length <= 2) {
+      assignedClasses.push(classes.red); // classes = ['red']
+    }
+    if (this.state.persons.length <= 1) {
+      assignedClasses.push(classes.bold); // classes = ['red', 'bold']
+    }
+
     return (
-      <div className={styles.App}>
-        <input
-          className={styles.myInput}
-          type="text"
-          onChange={this.inputChangeHandler}
-          value={this.state.myText}
-        />
-        <p className={styles.textLength}>{this.state.myText.length}</p>
-        <Validation textLenght={this.state.myText.length} />
-        {this.state.myText.split('').map((character, index) => (
-          <Character
-            value={character}
-            key={index}
-            cssClass={styles.character}
-            clicked={() => this.characterClickHandler(index)}
-          />
-        ))}
+      <div className={classes.App}>
+        <h1>Hi, I'm a React App</h1>
+        <p className={assignedClasses.join(' ')}>This is really working!</p>
+        <button className={btnClass} onClick={this.togglePersonsHandler}>
+          Toggle Persons
+        </button>
+        {persons}
       </div>
     );
+    // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
   }
 }
 
