@@ -25,6 +25,7 @@ class App extends Component {
     return (
       <div className={styles.App}>
         <input
+          className={styles.myInput}
           type="text"
           onChange={this.inputChangeHandler}
           value={this.state.myText}

@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-.App input {
+.myInput {
   height: 20px;
   background-color: #e0e0e0;
   text-align: center;
@@ -13,7 +13,7 @@
   border-radius: 5px;
 }
 
-.App input:hover {
+.myInput:hover {
   background-color: #006064;
   color: #e1f5fe;
 }
